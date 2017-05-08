@@ -1,0 +1,112 @@
+html {
+  height: 100%;
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+body {
+  min-height: 100%;
+  background-color: #FFDD0C;
+  margin: 0;
+}
+
+#root{
+  min-height: inherit;
+}
+
+.topMenuBar {
+  margin-left: 17px;
+  margin-right: 17px;
+  margin-top: 29px;
+}
+
+.topMenuBar {
+  font-size: 20px;
+  font-family: "Roboto";
+  margin-left: 83px;
+  margin-right: 83px;
+  display: inline;
+  font-weight: lighter;
+}
+
+.moviesSection {
+  margin: 12px;
+}
+
+.moviesSection {
+  /* margin-top: 1px; */
+}
+
+.bottomSection {
+  /*position: absolute;*/
+  background-color: #FFFFFF;
+  height: 338px;
+  bottom:0;
+  left: 0;
+  width: 100%;
+}
+
+.bottomSection {
+  background-color: #FFFFFF;
+  font-size: 14px;
+  font-family: "Roboto";
+  font-weight: lighter;
+  margin-top: 35px;
+  margin-left: 12px;
+  margin-right: 12px;
+  line-height: 30px;
+  color: #4F565D;
+}
+
+.topSection {
+  /*display: inline;*/
+  margin-top: 12px;
+}
+
+.topSection {
+  font-family: Roboto;
+  font-size: 20px;
+  font-weight: bold;
+  line-height: 1.25;
+  color: #2c2605;
+}
+
+.topSection {
+  font-family: Roboto;
+  font-size: 20px;
+  font-weight: bold;
+  line-height: 1.25;
+  color: #2c2605;
+  margin-top: 0px;
+  float:left;
+
+}
+
+#starsImg {
+  display: inline;
+  width: 82px;
+  height: 14px;
+  margin-left: 30px;
+}
+
+.topSection {
+  font-family: Roboto;
+  font-size: 14px;
+  line-height: 1.79;
+  color: #9f8b0c;
+
+
+}
+
+.topSection {
+  width: 100px;
+  height: 160px;
+  margin-left: 12px;
+  margin-right: 12px;
+  box-shadow: 0 20px 33px 0 rgba(184, 118, 12, 0.73);
+  float: left;
+  clear: both;
+}
