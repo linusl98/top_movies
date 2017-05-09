@@ -84,7 +84,8 @@ class Movie extends Component {
         <div className="body">
           <div className="left">
             <div className="poster">
-              <img src={`${IMAGE_PATH}${this.state.movie.poster_path}`} />
+              <img src={this.state.movie.poster_path === null ? '../../../images/image-not-found.png' : `${IMAGE_PATH}${this.state.movie.poster_path}`} />
+              {console.log(this.state.movie.poster_path)}
             </div>
             <p className="release-date">{`Launched: ${this.state.movie.release_date}`}</p>
           </div>
@@ -94,7 +95,6 @@ class Movie extends Component {
             <div>
               <h2 className="price">$9.99</h2>
               {stars.map((fill, i) => <Star key={i} fill={fill} />)}
-              <img src="./../../../icons/rating.png" />
             </div>
           </div>
         </div>
@@ -164,9 +164,11 @@ class Movie extends Component {
 
           .overview {
             background-color: #FFFFFF;
+            color: #4F565D;
             padding: 24px 16px;
             margin: 0;
             flex: 1;
+            font-weight: 400;
           }
 
           .movie-overview {

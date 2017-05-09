@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { Link } from 'react-router-dom';
 import Header from './Header';
+import { debounce } from 'lodash';
 
 // import '../styles/style.css';
 const propTypes = {};
@@ -17,6 +18,8 @@ class Root extends Component {
     this.state = {
       movies: {},
     };
+
+    this.searchMoviesByName = this.searchMoviesByName.bind(this);
   }
 
   componentWillMount() {
@@ -29,9 +32,59 @@ class Root extends Component {
   }
 
   getMoviesByPopularity() {
-    return (
-      fetch(`${API}/discover/movie?sort_by=popularity.desc&${API_KEY}`)
+    return fetch(`${API}/discover/movie?sort_by=popularity.desc&${API_KEY}`)
+    .then(res => res.json());
+  }
+
+  searchMoviesByName(query) {
+    if (document.getElementById('search-movie').value === '') {
+      return fetch(`${API}/discover/movie?sort_by=popularity.desc&${API_KEY}`)
       .then(res => res.json())
+      .then((data) => {
+        this.setState({
+          movies: data,
+        });
+      });
+    }
+
+    return (
+        fetch(`${API}/search/movie?query=${document.getElementById('search-movie').value}&${API_KEY}`)
+        .then(res => res.json())
+        .then((data) => {
+          this.setState({
+            movies: data,
+          });
+        })
+    );
+  }
+
+  renderPlaceholder() {
+    const width = 92;
+    const height = 138;
+    const paddingTop = `${height / (width / 100)}%`;
+    return (
+      <div style={{ paddingTop }}>
+        <h3>404</h3>
+        <style jsx>{`
+          div {
+            position: relative;
+            display: block;
+            width: 100%;
+            background-color: black;
+          }
+          h3 {
+            position: absolute;
+            top: 50%;
+            text-align: center;
+            width: 100%;
+            color: #fff;
+            display: block;
+            font-size: 12px;
+            margin: 0;
+            margin-top: -6px;
+          }
+        `}</style>
+      </div>
     );
   }
 
@@ -41,13 +94,13 @@ class Root extends Component {
     }
     return (
       <div>
-        <Header title="Movies" history={this.props.history} />
+        <Header search={debounce(this.searchMoviesByName, 1000)} title="Movies" history={this.props.history} />
         <div className="body">
           <ul className="movies">
             {this.state.movies.results.map(item => (
               <li key={item.id} className="movie">
                 <Link to={`/movies/${item.id}`}>
-                  <img className="movie-poster" src={`${IMAGE_PATH}${item.poster_path}`} />
+                  {item.poster_path === null ? this.renderPlaceholder() : <img className="movie-poster" src={`${IMAGE_PATH}${item.poster_path}`} />}
                 </Link>
               </li>
             ))}
@@ -68,10 +121,10 @@ class Root extends Component {
           .movie {
             display: inline-block;
             padding: 8px 8px;
-            width: 33.33%
+            width: 33.33%;
           }
 
-          .movie-poster {
+          .movie-poster{
             display: block;
             width: 100%;
           }
