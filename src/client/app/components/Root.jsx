@@ -17,28 +17,39 @@ class Root extends Component {
     super(props);
     this.state = {
       movies: {},
+      showSideMenu: false,
+      release_year: 2017,
+      sort: 'popularity',
+      order: 'desc',
     };
 
     this.searchMoviesByName = this.searchMoviesByName.bind(this);
+    this.showSideMenu = this.showSideMenu.bind(this);
+    this.increaseReleaseYear = this.increaseReleaseYear.bind(this);
+    this.decreaseReleaseYear = this.decreaseReleaseYear.bind(this);
+    this.handleSortChange = this.handleSortChange.bind(this);
+    this.handleOrderChange = this.handleOrderChange.bind(this);
+    this.getMovies = debounce(this.getMovies, 750).bind(this);
   }
 
   componentWillMount() {
-    this.getMoviesByPopularity()
+    this.getMovies();
+  }
+
+  getMovies() {
+    fetch(`${API}/discover/movie?sort_by=${this.state.sort}.${this.state.order}&${API_KEY}`)
+    .then(res => res.json())
     .then((data) => {
       this.setState({
         movies: data,
       });
     });
-  }
-
-  getMoviesByPopularity() {
-    return fetch(`${API}/discover/movie?sort_by=popularity.desc&${API_KEY}`)
-    .then(res => res.json());
+    console.log('get movies');
   }
 
   searchMoviesByName(query) {
     if (document.getElementById('search-movie').value === '') {
-      return fetch(`${API}/discover/movie?sort_by=popularity.desc&${API_KEY}`)
+      return fetch(`${API}/discover/movie?sort_by=${this.state.sort}.${this.state.order}&${API_KEY}`)
       .then(res => res.json())
       .then((data) => {
         this.setState({
@@ -48,7 +59,7 @@ class Root extends Component {
     }
 
     return (
-        fetch(`${API}/search/movie?query=${document.getElementById('search-movie').value}&${API_KEY}`)
+        fetch(`${API}/search/movie?query=${document.getElementById('search-movie').value}&sort_by=${this.state.sort}.${this.state.order}&${API_KEY}`)
         .then(res => res.json())
         .then((data) => {
           this.setState({
@@ -56,6 +67,42 @@ class Root extends Component {
           });
         })
     );
+  }
+
+  showSideMenu() {
+    this.setState({
+      showSideMenu: !this.state.showSideMenu,
+    });
+  }
+
+  handleSortChange() {
+    this.setState({
+      sort: document.getElementById('sort_select').value,
+    });
+    console.log('bf bounce');
+    // debounce(this.getMovies, 1000, { leading: true });
+    this.getMovies();
+    console.log('af bounce');
+  }
+
+  handleOrderChange(event) {
+    this.setState({
+      order: event.target.value,
+    });
+  }
+
+  increaseReleaseYear() {
+    this.setState({
+      release_year: this.state.release_year += 1,
+    });
+    this.getMovies();
+  }
+
+  decreaseReleaseYear() {
+    this.setState({
+      release_year: this.state.release_year -= 1,
+    });
+    this.getMovies();
   }
 
   renderPlaceholder() {
@@ -94,8 +141,33 @@ class Root extends Component {
     }
     return (
       <div>
-        <Header search={debounce(this.searchMoviesByName, 1000)} title="Movies" history={this.props.history} />
+        <Header menuAction={this.showSideMenu} search={debounce(this.searchMoviesByName, 1000)} title="Movies" history={this.props.history} />
         <div className="body">
+          <div className="side-menu-container" style={{ width: this.state.showSideMenu ? '50%' : '0%' }}>
+            <ul className="side-menu-items">
+              <h3 className="side-menu-title">Search params</h3>
+              <li className="side-menu-item">
+                <h4 style={{ margin: 0 }}>Release year</h4>
+                <button onClick={this.decreaseReleaseYear}>-</button>
+                {this.state.release_year}
+                <button onClick={this.increaseReleaseYear}>+</button>
+              </li>
+              <li className="side-menu-item">
+                <h4 style={{ margin: 0 }}>Sort by</h4>
+                <select id="sort_select" selected={this.state.sort} onChange={this.handleSortChange}>
+                  <option value="popularity">Popularity</option>
+                  <option value="revenue">Revenue</option>
+                  <option value="vote_count">Vote count</option>
+                  <option value="release_date">Release date</option>
+                </select>
+              </li>
+              <li className="side-menu-item">
+                <h4 style={{ margin: 0 }}>Order</h4>
+                  Asc <input onChange={this.handleOrderChange} id="order" name="order_select" type="radio" value="asc" />
+                  Desc <input onChange={this.handleOrderChange} id="order" name="order_select" type="radio" value="desc" />
+              </li>
+            </ul>
+          </div>
           <ul className="movies">
             {this.state.movies.results.map(item => (
               <li key={item.id} className="movie">
@@ -109,7 +181,31 @@ class Root extends Component {
         <style jsx>{`
           .body {
             padding: 24px 16px 16px;
+            display: flex;
+            flex-direction: row;
           }
+
+          .side-menu-container {
+            width: 0%;
+            background-color: #FFF;
+            position: absolute;
+            transition: width 1s;
+            height: 100%;
+            z-index: 90;
+          }
+
+          .side-menu-items {
+            /*width: inherit;*/
+            padding-left: 0px;
+          }
+
+          .side-menu-item, .side-menu-title {
+            overflow: hidden;
+            text-align: center;
+            padding-bottom: 10px;
+          }
+
+
 
           .movies {
             list-style: none;

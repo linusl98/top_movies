@@ -46,7 +46,7 @@ class Header extends Component {
 
   showSearch() {
     if (this.state.showSearch === true) {
-      document.getElementById('search-bar').style.height = '50px';
+      document.getElementById('search-bar').style.height = '30px';
     } else {
       document.getElementById('search-bar').style.height = '0px';
     }
@@ -59,14 +59,16 @@ class Header extends Component {
     return (
       <div className="header-container">
         <div className="header">
-          {this.props.back ? <Back goBack={this.props.history.goBack} /> : <Menu />}
+          {this.props.back ? <Back goBack={this.props.history.goBack} /> : <button onClick={this.props.menuAction}><Menu /></button>}
           <h2 className="header-title">{this.props.title}</h2>
           <button id="search-btn" type="submit" onClick={this.showSearch}>
             <img style={{ height: '19px' }} src={searchIcon} />
           </button>
         </div>
-        <div className="header-search-container" id="search-bar">
-          <input type="text" id="search-movie" onChange={this.props.search} className="header-search-input" name="search" placeholder="Search.." />
+        <div>
+          <div className="header-search-container" id="search-bar">
+            <input type="text" id="search-movie" onChange={this.props.search} className="header-search-input" name="search" placeholder="Search.." />
+          </div>
         </div>
         <hr style={{ width: `${this.props.title.length}ch` }} />
         <style jsx>{`
@@ -84,13 +86,11 @@ class Header extends Component {
 
           .header-search-container {
             font-size: 15px;
-            padding-bottom: 5px;
             width: 100%;
             height: 0px;
-            transition: height 2s;
-            /*border: 1px solid #ccc;*/
-            /*border-radius: 4px;*/
-            /*box-sizing: border-box;*/
+            transition: height 1s;
+            overflow: hidden;
+            margin-bottom: 5px;
           }
 
           .header {
